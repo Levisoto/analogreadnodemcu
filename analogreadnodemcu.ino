@@ -44,18 +44,25 @@ void loop() {
   // put your main code here, to run repeatedly:
   while(itemp <= 50){
     sensorValue=analogRead(A0);
+    Temp = convertTemp(sensorValue);
+    vol = data*sin(10*frac*3.14159/180);
+    frac++;  
+    Serial.println(vol);
+    Serial.println(Temp);
+    Firebase.setFloat("/TempReport/"+String(itemp),vol);
+    Firebase.setFloat("/Tempadc/"+String(itemp),Temp);
+    delay(200);
+    itemp++;
+    }
+  itemp = 0;
+}
+
+double convertTemp(float sensorValue){
   Temp = sensorValue-SensorValueLow;
   Temp = Temp/SensorValueDiff;
   Temp = Temp*TempValueDiff;
   Temp = (Temp+TempValueLow);
   Temp =3*Temp/5;
-    vol = data*sin(10*frac*3.14159/180);
-    frac++;  
-    Serial.println(vol);
-    Firebase.setFloat("/TempReport/"+String(itemp),vol);
-    Firebase.setFloat("/Tempadc/"+String(itemp),Temp);
-    delay(10);
-    itemp++;
-    }
-  itemp = 0;
-}
+
+  return Temp;
+  }
